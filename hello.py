@@ -1,11 +1,14 @@
 from flask import Flask, redirect, url_for, session, request
 from flask_oauth import OAuth
+import json
  
  
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
-GOOGLE_CLIENT_ID = '791017688513-u45iqvj9n9213b2t9mmpncc2veh5a575.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'i8UbZutGZd5mGP635Lg0Dfdm'
+
+PARAMS = json.load(open('auth.json', 'r'))
+GOOGLE_CLIENT_ID = PARAMS['google_client_id']
+GOOGLE_CLIENT_SECRET = PARAMS['google_client_secret']
 REDIRECT_URI = '/redirect'  # one of the Redirect URIs from Google APIs console
  
 SECRET_KEY = 'development key'

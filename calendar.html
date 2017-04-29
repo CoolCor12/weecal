@@ -25,6 +25,7 @@
             text-align: left;
             padding: 20px;
         }
+
     </style>
 
 </head>
@@ -60,14 +61,17 @@
                 for (var j = 0; j < 4; j++) {
                     var cell = row.insertCell(j);
                     if (!(i == 1 && j == 3)) {
-                        cell.innerHTML = '<table id=' + i + '-' + j + '><thead><tr><th>' + days[mon.getDay()] + '</th></tr></thead><tbody><tr><th></th></tr></tbody><tfoot><tr><th>' + mon.getDate() + '</th></tr></foot></table>';
-                        mon.setDate(mon.getDate() + 1);
+                        cell.innerHTML = '<table id=' + i + '-' + j + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + '</th></tr></thead><tbody><tr><th></th></tr></tbody><tfoot><tr><th>' + mon.getDate() + '</th></tr></foot></table>';
+                    } else {
+                        cell.innerHTML = '<th></th>';
                     }
+                    mon.setDate(mon.getDate() + 1);
                 }
             }
         }
 
         buildWeek();
+
     </script>
 
 </body>

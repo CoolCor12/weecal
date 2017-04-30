@@ -3,38 +3,11 @@
 <head>
     <meta charset="utf-8">
 
-    <title>weecal</title>
+    <title>weeCal</title>
     <meta name="description" content="This is a calendar.">
     <meta name="author" content="the weecal team, of course">
 
     <style>
-        @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
-        body {
-            background-color: #FFFFFF;
-            font-family: "Roboto", helvetica, arial, sans-serif;
-            font-size: 16px;
-            font-weight: 400;
-            text-rendering: optimizeLegibility;
-        }
-        
-        div.table-title {
-            display: block;
-            margin: auto;
-            max-width: 600px;
-            padding: 5px;
-            width: 100%;
-        }
-        
-        .table-title h3 {
-            color: #000000;
-            font-size: 30px;
-            font-weight: 400;
-            font-style: normal;
-            font-family: "Roboto", helvetica, arial, sans-serif;
-            text-transform: uppercase;
-        }
-        /*** Table Styles **/
-        
         table {
             background: white;
             border-radius: 1px;
@@ -57,44 +30,53 @@
             text-align: left;
             vertical-align: middle;
         }
+        /* The Modal (background) */
         
-        tbody {
-            color: #666B85;
-            font-size: 23px;
-            font-weight: 100;
-            padding: 24px;
-            text-align: left;
-            vertical-align: middle;
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
         }
+        /* Modal Content/Box */
         
-        tfoot {
-            color: #666B85;
-            border-bottom: 4px solid #9ea7af;
-            font-size: 23px;
-            font-weight: 100;
-            padding: 24px;
-            text-align: left;
-            vertical-align: middle;
-        }
-        
-        tr {
-            border-top: 1px solid #C1C3D1;
-            border-bottom: 1px solid #C1C3D1;
-            color: #666B85;
-            font-size: 16px;
-            font-weight: normal;
-            text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
-        }
-
-        td {
-            background: #FFFFFF;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
             padding: 20px;
-            text-align: left;
-            vertical-align: middle;
-            font-weight: 300;
-            font-size: 18px;
-            text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
-            border-right: 1px solid #C1C3D1;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+        }
+        /* The Close Button */
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 
@@ -102,12 +84,43 @@
 
 <body>
 
-
     <table id="week-cal" class="week-cal">
     </table>
 
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Some text in the Modal..</p>
+        </div>
+
+    </div>
+
     <script type="text/javascript">
-        function buildWeek() {
+        
+        var mon = null;
+        
+        function makeHttpRequest(url) {
+            var xhr = null;
+            if (window.XMLHttpRequest) { // Mozilla/Safari
+                xhr = new XMLHttpRequest();
+            } else if (window.ActiveXObject) { // IE
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert(JSON.stringify(JSON.parse(xhr.responseText)));
+                }
+            };
+            xhr.send();
+        }
+        
+        function buildWeek(date) {
+            var cDate = null;
             var days = {
                 0: "Sun",
                 1: "Mon",
@@ -117,12 +130,17 @@
                 5: "Fri",
                 6: "Sat"
             }
-            var cDate = new Date(); // current date
+            if (date == "now") {
+                cDate = new Date(); // current date
+            }
+            else {
+                cDate = new Date(date);
+            }
             var monDiff = cDate.getDay() - 1; // days away last monday is
             if (monDiff == -1) { // since sunday = 0
                 monDiff = 6;
             }
-            var mon = new Date(); // last monday before current date
+            mon = new Date(); // last monday before current date
             mon.setDate(cDate.getDate() - monDiff);
             var table = document.getElementById('week-cal');
             table.innerHTML = '';
@@ -131,7 +149,9 @@
                 for (var j = 0; j < 4; j++) {
                     var cell = row.insertCell(j);
                     if (!(i == 1 && j == 3)) {
-                        cell.innerHTML = '<table id=' + i + '-' + j + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td></td></tr></tbody><tfoot><tr><td>o</td></tr></tfoot></table>';
+                        var id = i + '-' + j;
+                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">' 
+                        for '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
                     } else {
                         cell.innerHTML = '<th></th>';
                     }
@@ -140,7 +160,13 @@
             }
         }
 
-        buildWeek();
+        function showDay(id) {
+            var table = document.getElementById(id);
+            var events = table.rows[1].cells[0].innerHTML;
+            alert(events);
+        }
+
+        buildWeek("now");
     </script>
 
 </body>

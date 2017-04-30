@@ -46,9 +46,9 @@ def dashboard():
     
     return render_template('calendar.html')
 
-@app.route('/load_events')
+@app.route('/load_events', methods=['GET', 'POST'])
 def load_events():
-    return jsonify(get_events())
+    return dumps(get_events())
     
 @app.route('/create_event')
 def create_event():
@@ -173,7 +173,6 @@ def get_events():
             break
  
     events_dict = {'events': events_list}
-    print(events_dict)
-    return dumps(events_dict)
+    return events_dict
 
 app.run()

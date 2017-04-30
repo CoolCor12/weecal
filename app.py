@@ -4,6 +4,7 @@ from oauth2client import client
 from urllib2 import Request, urlopen, URLError
 from flask_oauth import OAuth
 import httplib2
+from json import dumps
 
 app = Flask(__name__)
 app.debug = True
@@ -22,9 +23,6 @@ def login():
     if credentials.access_token_expired:
         return redirect(url_for('oauth2callback'))
     else:
-        #http_auth = credentials.authorize(httplib2.Http())
-        #service = discovery.build('calendar', 'v3', http = http_auth)
-        #service = discovery.build('calendar', 'v3', http = http_auth)
         return dumps({'success': True})
     
 @app.route('/oauth2callback')
@@ -50,7 +48,7 @@ def dashboard():
 
 @app.route('/load_events')
 def load_events():
-    return dumps(get_events())
+    return jsonify(get_events())
     
 @app.route('/create_event')
 def create_event():
@@ -73,7 +71,7 @@ def create_event():
     }
 
     event = service.events().insert(calendarId='primary', body=event).execute()
-    return dumps({'success': True})
+    return jsonify({'success': True})
     
 
 @app.route('/edit_event')
@@ -97,7 +95,7 @@ def edit_event():
 
     updated_event = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
 
-    return dumps({'success': True})
+    return jsonify({'success': True})
     
 
 @app.route('/delete_event')
@@ -112,7 +110,7 @@ def delete_event():
     
     service.events().delete(calendarId='primary', eventId= event_id).execute()
     
-    return dumps({'success': True})
+    return jsonify({'success': True})
 
 def get_events():
     """Creates a Google Calendar API service object and outputs a list of all events and their pertinent info
@@ -173,9 +171,9 @@ def get_events():
         page_token = events.get('nextPageToken')
         if not page_token:
             break
-    #        
-    events_dict = {'events':events_list}
-    #pprint.pprint(events_dict)
-    return events_dict
+ 
+    events_dict = {'events': events_list}
+    print(events_dict)
+    return dumps(events_dict)
 
 app.run()

@@ -1,13 +1,18 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
 body {
-    margin: 0;
+    min-height: 100%;
     background: linear-gradient(#e0edff, #d6e5f8);
-    font-family: "Roboto", helvetica, arial, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
+    font-family: 'Lato', sans-serif;
+    flex-direction: column;
+    font-weight: 300;
+    line-height: 1.5;
     text-rendering: optimizeLegibility;
+    margin: 0px;
 }
+
+
 /*** Table Styles **/
+
 table {
     border-collapse: collapse;
     height: 320px;
@@ -18,6 +23,7 @@ table {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     animation: float 5s infinite;
 }
+
 th {
     color: #D5DDE5;
     background: #1b1e24;
@@ -28,15 +34,17 @@ th {
     text-align: left;
     vertical-align: middle;
 }
+
 tbody {
     color: #666B85;
-    border-collapse:  collapse;
+    border-collapse: collapse;
     font-size: 23px;
     font-weight: 100;
     padding: 24px;
     text-align: left;
     vertical-align: top;
 }
+
 tfoot {
     color: #666B85;
     border-collapse: collapse;
@@ -46,13 +54,15 @@ tfoot {
     text-align: right;
     vertical-align: middle;
 }
-.day-cal td:hover{
-    background: rgba(78,80,102, 0.45);
-    
+
+.day-cal td:hover {
+    background: rgba(78, 80, 102, 0.45);
 }
+
 .day-cal td {
     background: white;
 }
+
 .week-cal {
     margin-top: 10px;
 }

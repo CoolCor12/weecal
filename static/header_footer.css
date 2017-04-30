@@ -4,12 +4,14 @@ nav {
     background-color: #1b1e24;
     margin: auto;
     padding: 0px;
+    border-bottom: 4px #ff0000;
 }
 
 nav li {
     margin: 0;
     padding: 0 20px;
     display: inline;
+    font-size: 20px;
 }
 
 nav ul {
@@ -23,7 +25,8 @@ nav ul {
 .contact-btn a {
     margin-right: 30px;
     padding: 8px 18px;
-    border: 1px solid #204156;
+    border: 2px solid #D5DDE5;
+    border-radius: 6px;
 }
 
 .contact-btn a:active {

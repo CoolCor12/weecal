@@ -2,29 +2,29 @@
 html,
 body {
     min-height: 100%;
-    font-family: "Roboto", helvetica, arial, sans-serif;
+    background: linear-gradient(#e0edff, #d6e5f8);
+    font-family: 'Lato', sans-serif;
     flex-direction: column;
     font-weight: 300;
     line-height: 1.5;
     text-rendering: optimizeLegibility;
-}
-
-body {
-    font-family: 'Lato', sans-serif;
-    background: linear-gradient(#f2f7ff, #e3efff);
-    margin: 0;
-    
+    margin: 0px;
 }
 
 .page-title {
     text-align: center;
     font-weight: 400;
+    background: #FFFFFF;
+    margin: 0px;
+    padding-top: 50px;
+    
 }
 
 .page-description {
-    border: 1px solid #000;
     text-align: center;
     padding: 15px;
+    margin-top: 0px;
+    background: linear-gradient(#FFFFFF, #e0edff);
 }
 
 .calendar {

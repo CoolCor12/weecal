@@ -4,7 +4,6 @@ nav {
     background-color: #1b1e24;
     margin: auto;
     padding: 0px;
-    border-bottom: 4px #ff0000;
 }
 
 nav li {
@@ -34,9 +33,22 @@ nav ul {
     bottom: 1px;
 }
 
+.contact-btn a:hover {
+    background: rgba(78, 80, 102, 0.45);
+}
+
+
 nav a {
     height: 60px;
     line-height: 60px;
     color: #D5DDE5;
     text-decoration: none;
+}
+
+.bottom-bar {
+    position: fixed;
+    z-index: 100; 
+    bottom: 0; 
+    left: 0;
+    width: 100%;
 }

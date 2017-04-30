@@ -40,27 +40,52 @@
 
     <script type="text/javascript">
         var mon = null;
+        var data = {};
+        var eventUrl = 'http://localhost:5000/load_events';
 
-        function makeHttpRequest(url) {
+        function loadEvents() {
             var xhr = null;
             if (window.XMLHttpRequest) { // Mozilla/Safari
                 xhr = new XMLHttpRequest();
             } else if (window.ActiveXObject) { // IE
                 xhr = new ActiveXObject("Microsoft.XMLHTTP");
             }
-            xhr.open('POST', url);
+            xhr.open('POST', eventUrl);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert(JSON.stringify(JSON.parse(xhr.responseText)));
+                    return JSON.parse(xhr.responseText);
                 }
             };
             xhr.send();
         }
-
-        makeHttpRequest('http://localhost:5000/load_events');
+        
+        function convertDate(date) {
+            var day = date.getDay();
+            if (day < 10) {
+                day = '0' + day;
+            }
+            var month = date.getMonth() + 1;
+            if (month < 10) {
+                month = '0' + month;
+            }
+            var year = date.getFullYear();
+            return month + '/' + day + '/' + year;
+        }
 
         function buildWeek(date) {
+            //var events = loadEvents();
+            var events = {};
+            alert(JSON.stringify(events));
+            for (var key in Object.keys(events)) {
+                var date = events[key]['date'];
+                if (date in data) {
+                    data[date].push(events[key]);
+                }
+                else {
+                    data[date] = [events[key]];
+                }
+            }
             var cDate = null;
             var days = {
                 0: "Sun",
@@ -90,9 +115,14 @@
                     var cell = row.insertCell(j);
                     if (!(i == 1 && j == 3)) {
                         var id = i + '-' + j;
-                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">Hi</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
+                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">';
+                        alert(convertDate(mon));
+                        if (convertDate(mon) in data) {
+                            cell.innerHTML += 'HIIII<br>';
+                        }
+                        cell.innerHTML += '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
                     } else {
-                        cell.innerHTML = '<th></th>';
+                        cell.innerHTML = '<th><textarea style="WIDTH: 399px; HEIGHT: 182px" id="output" name="output" rows="9" wrap="virtual" cols=48></textarea></th>';
                     }
                     mon.setDate(mon.getDate() + 1);
                 }

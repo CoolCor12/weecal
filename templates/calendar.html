@@ -11,7 +11,54 @@
     <link rel="stylesheet" type="text/css" href="/static/header_footer.css">
 
     <style>
-
+        /* The Modal (background) */
+        
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+        }
+        /* The Close Button */
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
     </style>
 
@@ -21,24 +68,23 @@
 
     <nav class="top-bar">
         <ul>
-            <li><a href="#"><b>Home</b></a></li>
+            <li><a href="/"><b>Home</b></a></li>
             <li><a href="/logout">Log Out</a></li>
         </ul>
     </nav>
 
-    <table id="week-cal" class="week-cal">
-    </table>
+    <table id="week-cal" class="week-cal"></table>
 
-    <!--
+
     <div id="myModal" class="modal">
 
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Some text in the Modal..</p>
+            <table id="modal-table" class="modal-table"></table>
         </div>
 
     </div>
--->
+
 
     <nav class="bottom-bar">
         <div class="contact-btn">
@@ -47,9 +93,11 @@
     </nav>
 
     <script type="text/javascript">
-        var mon = null;
+        var monGlob = null;
         var data = {};
+        var not_sorted = {};
         var eventUrl = 'http://127.0.0.1:5000/load_events';
+        var deleteUrl = 'http://127.0.0.1:5000/delete_event';
 
         function loadEvents() {
             var xhr = null;
@@ -91,6 +139,7 @@
         }
 
         function buildWeek(events, when) {
+            data = {};
             for (var i = 0; i < events['events'].length; i++) {
                 var date = events['events'][i]['date'];
                 if (date in data) {
@@ -99,6 +148,7 @@
                     data[date] = [events['events'][i]];
                 }
             }
+            not_sorted = events;
             var cDate = null;
             var days = {
                 0: "Sun",
@@ -114,8 +164,11 @@
             } else {
                 cDate = new Date(when);
             }
+            monGlob = getMonday(cDate);
             var mon = getMonday(cDate);
             var table = document.getElementById('week-cal');
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
             table.innerHTML = '';
             for (var i = 0; i < 2; i++) {
                 var row = table.insertRow(i);
@@ -124,14 +177,12 @@
                     if (!(i == 1 && j == 3)) {
                         var id = i + '-' + j;
                         var to_add = '';
-                        to_add = to_add + '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">';
                         var to_check = convertDate(mon);
+                        to_add = to_add + '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\', \'' + to_check + '\')">';
                         if (to_check in data) {
                             for (var k = 0; k < data[to_check].length; k++) {
-                                to_add += data[to_check][k]['name'];
-                                if (k != (data[to_check].length - 1)) {
-                                    to_add += '<br>';
-                                }
+                                //to_add += ('<div class="event-box">' + data[to_check][k]['start time'] + ' - ' + data[to_check][k]['end time'] + ' | ' + data[to_check][k]['name'] + '</div>');
+                                to_add += '<div class="event-box">' + data[to_check][k]['name'] + '</div>';
                             }
                         }
                         to_add = to_add + '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
@@ -143,11 +194,104 @@
                 }
             }
         }
+        
+        function buildWeekBackup() {
+            data = {};
+            for (var i = 0; i < not_sorted['events'].length; i++) {
+                var date = not_sorted['events'][i]['date'];
+                if (date in data) {
+                    data[date].push(not_sorted['events'][i]);
+                } else {
+                    data[date] = [not_sorted['events'][i]];
+                }
+            }
+            var days = {
+                0: "Sun",
+                1: "Mon",
+                2: "Tue",
+                3: "Wed",
+                4: "Thu",
+                5: "Fri",
+                6: "Sat"
+            };
+            var table = document.getElementById('week-cal');
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+            table.innerHTML = '';
+            for (var i = 0; i < 2; i++) {
+                var row = table.insertRow(i);
+                for (var j = 0; j < 4; j++) {
+                    var cell = row.insertCell(j);
+                    if (!(i == 1 && j == 3)) {
+                        var id = i + '-' + j;
+                        var to_add = '';
+                        var monTemp = monGlob;
+                        var to_check = convertDate(monTemp);
+                        to_add = to_add + '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[monTemp.getDay()] + ' ' + monTemp.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\', \'' + to_check + '\')">';
+                        if (to_check in data) {
+                            for (var k = 0; k < data[to_check].length; k++) {
+                                //to_add += ('<div class="event-box">' + data[to_check][k]['start time'] + ' - ' + data[to_check][k]['end time'] + ' | ' + data[to_check][k]['name'] + '</div>');
+                                to_add += '<div class="event-box">' + data[to_check][k]['name'] + '</div>';
+                            }
+                        }
+                        to_add = to_add + '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
+                        cell.innerHTML = to_add;
+                    } else {
+                        cell.innerHTML = '<th><textarea style="WIDTH: 300px; HEIGHT: 182px" id="output" name="output" rows="9" wrap="virtual" cols=48></textarea></th>';
+                    }
+                    monTemp.setDate(monTemp.getDate() + 1);
+                }
+            }
+        }
 
-        function showDay(id) {
+        function showDay(id, date) {
             var table = document.getElementById(id);
-            var events = table.rows[1].cells[0].innerHTML;
-            alert(events);
+            var modal = document.getElementById('myModal');
+            var table = document.getElementById('modal-table');
+            table.innerHTML = '';
+            for (var i = 0; i < data[date].length; i++) {
+                var to_add = '';
+                var row = table.insertRow(i);
+                to_add += 'Title: ' + data[date][i]['name'] + '<br>';
+                if ('descrip' in data[date][i]) {
+                    to_add += 'Description: ' + data[date][i]['descrip'] + '<br>';
+                }
+                if (data[date][i]['start time'] == 'all day') {
+                    to_add += 'Time: all day';
+                } else {
+                    to_add += 'Time: ' + data[date][i]['start time'] + ' - ' + data[date][i]['end time'];
+                }
+                to_add += '<br><button class="event-delete" onclick="deleteEvent(\'' + data[date][i]['event_id'] + '\')">Delete</button>';
+                row.innerHTML = to_add;
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            modal.style.display = "block";
+        }
+
+        function deleteEvent(event_id) {
+            var xhr = null;
+            var modal = document.getElementById('myModal');
+            if (window.XMLHttpRequest) { // Mozilla/Safari
+                xhr = new XMLHttpRequest();
+            } else if (window.ActiveXObject) { // IE
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xhr.open('POST', deleteUrl);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    modal.style.display = "none";
+                    //setTimeout(loadEvents, 500);
+                    buildWeekBackup();
+                }
+            };
+            xhr.send(JSON.stringify({
+                'event_id': event_id
+            }));
         }
 
         loadEvents()

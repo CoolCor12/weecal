@@ -105,7 +105,7 @@ def edit_event():
     return jsonify({'success': True})
     
 
-@app.route('/delete_event')
+@app.route('/delete_event', methods=['POST'])
 def delete_event():
     """ deletes an event """
     req = request.json

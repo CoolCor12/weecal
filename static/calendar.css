@@ -43,7 +43,7 @@ tfoot {
     font-size: 23px;
     font-weight: 100;
     padding: 24px;
-    text-align: left;
+    text-align: right;
     vertical-align: middle;
 }
 .day-cal td:hover{

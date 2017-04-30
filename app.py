@@ -1,15 +1,10 @@
-from flask import Flask, redirect, url_for, session, request, render_template
+from flask import Flask, redirect, url_for, session, request, render_template, jsonify
 from apiclient import discovery
 from oauth2client import client
 from urllib2 import Request, urlopen, URLError
 from flask_oauth import OAuth
-from json import dumps, load, loads
 import httplib2
 
-PARAMS = load(open('auth.json', 'r'))
-GOOGLE_CLIENT_ID = PARAMS['google_client_id']
-GOOGLE_CLIENT_SECRET = PARAMS['google_client_secret']
- 
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'development key'
@@ -52,3 +47,5 @@ def dashboard():
         return redirect(url_for('login'))
     
     return render_template('calendar.html')
+
+app.run()

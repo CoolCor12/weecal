@@ -6,32 +6,10 @@
     <title>weeCal</title>
     <meta name="description" content="This is a calendar.">
     <meta name="author" content="the weecal team, of course">
+    
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='calendar.css')}}">
 
     <style>
-        table {
-            background: white;
-            border-radius: 1px;
-            border-collapse: collapse;
-            height: 320px;
-            margin: auto;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-            animation: float 5s infinite;
-        }
-        
-        th {
-            color: #D5DDE5;
-            background: #1b1e24;
-            border-bottom: 4px solid #9ea7af;
-            font-size: 23px;
-            font-weight: 300;
-            padding: 24px;
-            text-align: left;
-            vertical-align: middle;
-        }
-        /* The Modal (background) */
-        
         .modal {
             display: none;
             /* Hidden by default */
@@ -119,6 +97,8 @@
             xhr.send();
         }
         
+        makeHttpRequest('http://localhost:5000/load_events');
+        
         function buildWeek(date) {
             var cDate = null;
             var days = {
@@ -150,8 +130,7 @@
                     var cell = row.insertCell(j);
                     if (!(i == 1 && j == 3)) {
                         var id = i + '-' + j;
-                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">' 
-                        for '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
+                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">Hi</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
                     } else {
                         cell.innerHTML = '<th></th>';
                     }

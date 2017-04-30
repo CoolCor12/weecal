@@ -5,17 +5,15 @@
     <title>weeCal</title>
     <meta charset="utf-8"/>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,100,700,900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="welcome.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='welcome.css')}}">
 </head>
 
 <body>
     <nav>
       <ul>
         <li><a href="#"><b>Home</b></a></li>
-        <li><a href="#">Login with Google</a></li>
+        <li><a href="/login">Login with Google</a></li>
       </ul>
-      <div class="contact-btn"><a>Contact</a>
-      </div>
     </nav>
     
     <header>
@@ -25,7 +23,7 @@
     </header>
     
     <div class="calendar">
-        <img SRC="calpic.jpg">
+        <img SRC="{{ url_for('static', filename='CalPic.jpg')}}">
     
     </div>
     
@@ -43,13 +41,15 @@
         <img class="thumbnail" src="https://img.buzzfeed.com/buzzfeed-static/static/enhanced/webdr02/2012/12/15/17/anigif_enhanced-buzz-3799-1355608849-1.gif">
       </figure>
     </div>
+    <br>
+    <br>
     
         <nav>
       <ul>
         <li><a href="#"><b>Home</b></a></li>
-        <li><a href="#">Login with Google</a></li>
+        <li><a href="/login">Login with Google</a></li>
       </ul>
-      <div class="contact-btn"><a>Contact</a>
+      <div class="contact-btn"><a href="mailto:weecal.inc@gmail.com">Contact Us!</a>
       </div>
     </nav>
     

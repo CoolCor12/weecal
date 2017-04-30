@@ -1,0 +1,52 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+body {
+    background-color: #FFFFFF;
+    font-family: "Roboto", helvetica, arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+/*** Table Styles **/
+table {
+    background: white;
+    border-radius: 1px;
+    border-collapse: collapse;
+    height: 320px;
+    margin: auto;
+    max-width: 1000px;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    animation: float 5s infinite;
+}
+th {
+    color: #D5DDE5;
+    background: #1b1e24;
+    border-bottom: 4px solid #9ea7af;
+    font-size: 23px;
+    font-weight: 300;
+    padding: 24px;
+    text-align: left;
+    vertical-align: middle;
+}
+tbody {
+    color: #666B85;
+    border-collapse:  collapse;
+    font-size: 23px;
+    font-weight: 100;
+    padding: 24px;
+    text-align: left;
+    vertical-align: middle;
+}
+tfoot {
+    color: #666B85;
+    border-collapse: collapse;
+    font-size: 23px;
+    font-weight: 100;
+    padding: 24px;
+    text-align: left;
+    vertical-align: middle;
+}
+.day-cal td:hover{
+    background: rgba(78,80,102, 0.45);
+    
+}

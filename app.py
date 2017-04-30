@@ -23,7 +23,7 @@ def login():
     if credentials.access_token_expired:
         return redirect(url_for('oauth2callback'))
     else:
-        return dumps({'success': True})
+        return redirect(url_for('dashboard'))
     
 @app.route('/oauth2callback')
 def oauth2callback():

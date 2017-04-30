@@ -1,10 +1,7 @@
 from flask import Flask, redirect, url_for, session, request, render_template, jsonify
 from apiclient import discovery
 from oauth2client import client
-from urllib2 import Request, urlopen, URLError
-from flask_oauth import OAuth
 import httplib2
-from json import dumps
 
 app = Flask(__name__)
 app.debug = True
@@ -25,6 +22,16 @@ def login():
     else:
         return redirect(url_for('dashboard'))
     
+@app.route('/logout')
+def logout():
+#    try:
+#        credentials = client.OAuth2Credentials.from_json(session['credentials'])
+#        credentials.revoke(httplib2.Http())
+#    except:
+#        pass
+#    del session['credentials']
+    return redirect(url_for('home'))
+
 @app.route('/oauth2callback')
 def oauth2callback():
     flow = client.flow_from_clientsecrets('client_secrets.json',
@@ -48,7 +55,7 @@ def dashboard():
 
 @app.route('/load_events', methods=['GET', 'POST'])
 def load_events():
-    return dumps(get_events())
+    return jsonify(get_events())
     
 @app.route('/create_event')
 def create_event():
@@ -128,44 +135,49 @@ def get_events():
         # loop through all events
         events_list = []
         for event in events['items']:
-            # event id
-            eventid = event['id']
-            # name
-            name = event['summary']
+            try:
+                # event id
+                eventid = event['id']
+                # name
+                name = ''
+                if 'summary' in event:
+                    name = event['summary']
 
-            # description
-            if 'description' in event:
-                descrip = event['description']
-            else:
-                descrip = ''
-                
-            # date and time
-            if 'dateTime' in event['start']:
-                # date
-                dateTime = event['start']['dateTime'].split('T')
-                old_date = dateTime[0].split('-')
-                new_date = '/'.join([str(old_date[1]),str(old_date[2]),str(old_date[0])])
-                # time
-                start_time = dateTime[1].split('-')[0]
-                end_time = event['end']['dateTime'].split('T')
-                end_time = end_time[1].split('-')[0]
-            elif 'date' in event['start']:
-                date = event['start']['date']
-                old_date = date.split('-')
-                new_date = '/'.join([str(old_date[1]),str(old_date[2]),str(old_date[0])])
-                if len(new_date) == 10:
-                    start_time = 'all day'
-                    end_time = 'all day'
-               
-            # create dictionary for each event 
-            if len(descrip) > 0:
-                
-                update_dict = {'name':name,'event_id':eventid,'date':new_date,'start time':start_time,'end time':end_time,'description':descrip}
-            else:
-                update_dict = {'name':name,'event_id':eventid,'date':new_date,'start time':start_time,'end time':end_time,}
-                
-            # append each dictionary to lsit
-            events_list.append(update_dict)
+                # description
+                if 'description' in event:
+                    descrip = event['description']
+                else:
+                    descrip = ''
+
+                # date and time
+                if 'dateTime' in event['start']:
+                    # date
+                    dateTime = event['start']['dateTime'].split('T')
+                    old_date = dateTime[0].split('-')
+                    new_date = '/'.join([str(old_date[1]),str(old_date[2]),str(old_date[0])])
+                    # time
+                    start_time = dateTime[1].split('-')[0]
+                    end_time = event['end']['dateTime'].split('T')
+                    end_time = end_time[1].split('-')[0]
+                elif 'date' in event['start']:
+                    date = event['start']['date']
+                    old_date = date.split('-')
+                    new_date = '/'.join([str(old_date[1]),str(old_date[2]),str(old_date[0])])
+                    if len(new_date) == 10:
+                        start_time = 'all day'
+                        end_time = 'all day'
+
+                # create dictionary for each event 
+                if len(descrip) > 0:
+
+                    update_dict = {'name':name,'event_id':eventid,'date':new_date,'start time':start_time,'end time':end_time,'description':descrip}
+                else:
+                    update_dict = {'name':name,'event_id':eventid,'date':new_date,'start time':start_time,'end time':end_time,}
+
+                # append each dictionary to lsit
+                events_list.append(update_dict)
+            except:
+                pass
         
         # end loop when no more events 
         page_token = events.get('nextPageToken')

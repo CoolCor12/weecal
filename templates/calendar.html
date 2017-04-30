@@ -47,8 +47,9 @@
 
     <script type="text/javascript">
         var mon = null;
+        var events = {};
         var data = {};
-        var eventUrl = 'http://localhost:5000/load_events';
+        var eventUrl = 'http://127.0.0.1:5000/load_events';
 
         function loadEvents() {
             var xhr = null;
@@ -61,7 +62,7 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    return JSON.parse(xhr.responseText);
+                    events = JSON.parse(xhr.responseText);
                 }
             };
             xhr.send();
@@ -81,9 +82,8 @@
         }
 
         function buildWeek(date) {
-            //var events = loadEvents();
-            var events = {};
-            //alert(JSON.stringify(events));
+            loadEvents();
+            alert(JSON.stringify(events));
             for (var key in Object.keys(events)) {
                 var date = events[key]['date'];
                 if (date in data) {
@@ -121,14 +121,15 @@
                     var cell = row.insertCell(j);
                     if (!(i == 1 && j == 3)) {
                         var id = i + '-' + j;
-                        cell.innerHTML = '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">';
-                        //alert(convertDate(mon));
+                        var to_add = '';
+                        to_add = to_add + '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">';
                         if (convertDate(mon) in data) {
-                            cell.innerHTML += 'HIIII<br>';
+                            to_add += 'HIIII<br>';
                         }
-                        cell.innerHTML += '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
+                        to_add = to_add + '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
+                        cell.innerHTML = to_add;
                     } else {
-                        cell.innerHTML = '<th><textarea style="WIDTH: 399px; HEIGHT: 182px" id="output" name="output" rows="9" wrap="virtual" cols=48></textarea></th>';
+                        cell.innerHTML = '<th><textarea style="WIDTH: 300px; HEIGHT: 182px" id="output" name="output" rows="9" wrap="virtual" cols=48></textarea></th>';
                     }
                     mon.setDate(mon.getDate() + 1);
                 }

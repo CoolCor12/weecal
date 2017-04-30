@@ -8,6 +8,7 @@ Program Description: calls weather underground api
 
 from __future__ import print_function
 import requests
+import pprint
 
 def weather(state,city):
     """calls weather underground api, returns json containing 
@@ -22,8 +23,25 @@ def weather(state,city):
     
     # api call
     url = "http://api.wunderground.com/api/"+wid+"/conditions/q/"+state+"/"+city+".json"
-    response = requests.get(url)
-    weather_json = response.json()
+    
+#    url = "http://api.wunderground.com/api/"+wid+"/forecast10day/q/"+state+"/"+city+".json"
+#    response = requests.get(url)
+#    weather_json = response.json()
+#    
+#    weather_json = weather_json['forecast']['txt_forecast']['forecastday']
+#    
+#    
+#    for i in range(14):
+#        weather = weather_json[i]['fcttext'].split('.')
+#        for j in len(weather_json):
+#            if 'High' in weather[j]:
+#                high = weather[j]
+#                print(high)
+#            elif 'Low' in weather[j]:
+#                low = weather[j]
+#                print(low)
+#        icon_url = weather_json[i]['icon_url']
+#        print(icon_url)   
     
     # pull info from json
     full_loc = [weather_json['current_observation']['display_location']['full']]
@@ -71,3 +89,5 @@ def print_weather():
     print("Temperature(f): "+weather_dict['feelslike_f'])
     print("Feels like: "+weather_dict['temp_f'])
     print(weather_dict['last_up'])
+    
+weather('ma','boston')

@@ -29,7 +29,7 @@
     <table id="week-cal" class="week-cal">
     </table>
 
-<!--
+    <!--
     <div id="myModal" class="modal">
 
         <div class="modal-content">
@@ -47,7 +47,6 @@
 
     <script type="text/javascript">
         var mon = null;
-        var events = {};
         var data = {};
         var eventUrl = 'http://127.0.0.1:5000/load_events';
 
@@ -62,7 +61,9 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    events = JSON.parse(xhr.responseText);
+                    var events = xhr.responseText;
+                    events = JSON.parse(events);
+                    buildWeek(events, "05/03/2017");
                 }
             };
             xhr.send();
@@ -81,15 +82,20 @@
             return month + '/' + day + '/' + year;
         }
 
-        function buildWeek(date) {
-            loadEvents();
-            alert(JSON.stringify(events));
-            for (var key in Object.keys(events)) {
-                var date = events[key]['date'];
+        function getMonday(date) {
+            var day = date.getDay() || 7;
+            if (day !== 1)
+                date.setHours(-24 * (day - 1));
+            return date;
+        }
+
+        function buildWeek(events, when) {
+            for (var i = 0; i < events['events'].length; i++) {
+                var date = events['events'][i]['date'];
                 if (date in data) {
-                    data[date].push(events[key]);
+                    data[date].push(events['events'][i]);
                 } else {
-                    data[date] = [events[key]];
+                    data[date] = [events['events'][i]];
                 }
             }
             var cDate = null;
@@ -101,18 +107,13 @@
                 4: "Thu",
                 5: "Fri",
                 6: "Sat"
-            }
-            if (date == "now") {
+            };
+            if (when == "now") {
                 cDate = new Date(); // current date
             } else {
-                cDate = new Date(date);
+                cDate = new Date(when);
             }
-            var monDiff = cDate.getDay() - 1; // days away last monday is
-            if (monDiff == -1) { // since sunday = 0
-                monDiff = 6;
-            }
-            mon = new Date(); // last monday before current date
-            mon.setDate(cDate.getDate() - monDiff);
+            var mon = getMonday(cDate);
             var table = document.getElementById('week-cal');
             table.innerHTML = '';
             for (var i = 0; i < 2; i++) {
@@ -123,8 +124,14 @@
                         var id = i + '-' + j;
                         var to_add = '';
                         to_add = to_add + '<table id=' + id + ' class="day-cal"><thead><tr><th>' + days[mon.getDay()] + ' ' + mon.getDate() + '</th></tr></thead><tbody><tr><td onclick="showDay(\'' + id + '\')">';
-                        if (convertDate(mon) in data) {
-                            to_add += 'HIIII<br>';
+                        var to_check = convertDate(mon);
+                        if (to_check in data) {
+                            for (var k = 0; k < data[to_check].length; k++) {
+                                to_add += data[to_check][k]['name'];
+                                if (k != (data[to_check].length - 1)) {
+                                    to_add += '<br>';
+                                }
+                            }
                         }
                         to_add = to_add + '</td></tr></tbody><tfoot><tr><td>This is a footer.</td></tr></tfoot></table>';
                         cell.innerHTML = to_add;
@@ -142,7 +149,7 @@
             alert(events);
         }
 
-        buildWeek("now");
+        loadEvents()
 
     </script>
 

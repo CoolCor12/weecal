@@ -1,39 +1,39 @@
 /* HEADER NAVIGATION */
 
 nav {
-  background-color: #FFF;
+    background-color: #1b1e24;
+    margin: auto;
+    padding: 0px;
 }
 
 nav li {
-  margin: 0;
-  padding: 0 20px;
-  display: inline;
+    margin: 0;
+    padding: 0 20px;
+    display: inline;
 }
 
 nav ul {
-  display: inline;
+    display: inline;
 }
 
 .contact-btn {
-  float: right;
-
+    float: right;
 }
 
 .contact-btn a {
-  margin-right: 30px;
-  padding: 8px 18px;
-  border: 1px solid #204156;
-
+    margin-right: 30px;
+    padding: 8px 18px;
+    border: 1px solid #204156;
 }
 
 .contact-btn a:active {
-  position: relative;
-  bottom: 1px;
+    position: relative;
+    bottom: 1px;
 }
 
 nav a {
-  height: 60px;
-  line-height: 60px;
-  color: #204156;
-  text-decoration: none;
+    height: 60px;
+    line-height: 60px;
+    color: #D5DDE5;
+    text-decoration: none;
 }
